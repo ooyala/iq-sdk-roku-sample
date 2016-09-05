@@ -270,9 +270,10 @@ End Function
 
 Function findBestStreamURLForRemoteAsset(streamUrls as Object)
     flashUrl = streamUrls.flash
-    For each url in streamUrls
-        if url.Instr(".m3u8") <> -1
-            return url
+    For each streamType in streamUrls
+        streamURL = streamUrls[streamType]
+        if streamURL <> invalid and streamURL.Instr(".m3u8") <> -1
+            return streamURL
         end if
     end for
     return flashUrl
