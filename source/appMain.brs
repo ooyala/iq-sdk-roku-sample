@@ -95,11 +95,15 @@ Function playAsset(asset as Object, backlotAsset as Object)
     videoclip.StreamBitrates = asset.StreamBitrates
     videoclip.StreamUrls = asset.StreamUrls
     videoclip.StreamQualities = asset.StreamQualities
-    if(m.STREAM_FORMAT = "MP4")
+
+    if(asset.ForceHLS = true)
+        videoclip.StreamFormat = "hls"
+    elseif(m.STREAM_FORMAT = "MP4")
         videoclip.StreamFormat = "mp4"
     else
         videoclip.StreamFormat = "hls"
     end if
+
     videoclip.title = asset.Title
     
     'Assign videocontent to video screen Object
@@ -171,14 +175,15 @@ Function makeAssetListFromRemoteAssets(assets as Object)
     assetList = []
     For each asset in assets
         contentItem = {}
-        print "Adding stream URL ";asset.stream 
-        streams = getStreamsForEmbedCode(asset.embedCode)
         contentItem.AddReplace("Title", asset.name)
         contentItem.AddReplace("Length", asset.duration/1000)
         contentItem.AddReplace("HDPosterUrl", asset.posterURL)
         contentItem.AddReplace("StreamUrls", [asset.stream])
         contentItem.AddReplace("StreamBitrates", [0])
         contentItem.AddReplace("StreamQualities", ["HD"])
+        if asset.is_live
+            contentItem.AddReplace("ForceHLS", true)
+        end if
         assetList.push(contentItem)
     end for
     return assetList
@@ -257,6 +262,7 @@ Function getAssetsListsFromJSON( json as Object, prefix as String) as  Object
                     asset.AddReplace("name", item.name)
                     asset.AddReplace("posterURL", item.preview_image_url)
                     asset.AddReplace("stream", findBestStreamURLForRemoteAsset(item.stream_urls))
+                    asset.AddReplace("is_live", item.is_live_stream)
                     remote.push(asset)
                 end if
             end if
@@ -270,9 +276,10 @@ End Function
 
 Function findBestStreamURLForRemoteAsset(streamUrls as Object)
     flashUrl = streamUrls.flash
-    For each url in streamUrls
-        if url.Instr(".m3u8") <> -1
-            return url
+    For each streamType in streamUrls
+        streamURL = streamUrls[streamType]
+        if streamURL <> invalid and streamURL.Instr(".m3u8") <> -1
+            return streamURL
         end if
     end for
     return flashUrl
