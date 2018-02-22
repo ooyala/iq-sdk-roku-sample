@@ -1,0 +1,15 @@
+<?xml version="1.00" encoding="utf-8" ?>
+
+<component name="IQ" extends="Task">
+	<interface>
+		<function name="SetUserInfo"/>
+		<function name="SetGeoInfo"/>
+		<function name="SetContentMetadata"/>
+		<function name="SendEvent"/>
+		<function name="ReportCustomEvent"/>
+		<function name="ReportReplay"/>
+		<function name="ReportPlayRequested"/>
+		<function name="ReportEventLoopExit"/>
+	</interface>
+	<script type="text/brightscript" uri="pkg:/source/IQ.brs" />
+</component>

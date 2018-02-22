@@ -18,14 +18,16 @@ module.exports = function(grunt) {
                         return 'source/' + filename;
                     else if (filepath.startsWith("manifest"))
                         return filename
+                    else if (filepath.startsWith("components"))
+                        return filepath       
                     else return 'images/' + filename;
                 },
                 
                 src: ['manifest',
-                    'source/appMain.brs',
+                    'source/*',
                     'images/*',
-                    'source/IQ.brs'],
-                dest: 'out/ooyala-iq-sample.zip'
+                    'components/*/*/*'],
+                dest: 'out/simple-grid-iq-sample.zip'
             }
 
 
@@ -36,7 +38,7 @@ module.exports = function(grunt) {
                 stderr: false
             },
             target: {
-                command: 'curl -S -F "mysubmit=Install" -F "archive=@out/ooyala-iq-sample.zip" --digest --user '+rokuUser +':'+rokuPassword+ ' -F "passwd='+ rokuPassword+'" http://'+ rokuIP+ '/plugin_install'
+                command: 'curl -S -F "mysubmit=Install" -F "archive=@out/simple-grid-iq-sample.zip" --digest --user '+rokuUser +':'+rokuPassword+ ' -F "passwd='+ rokuPassword+'" http://'+ rokuIP+ '/plugin_install'
             }
         }
 
